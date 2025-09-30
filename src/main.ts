@@ -25,10 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     if (startButton) {
         startButton.addEventListener('click', () => {
-            clearTimeout(loadingTimeout);
-            // Force hide loading screen
-            if (loadingScreen) {
-                loadingScreen.style.display = 'none';
+            if (gameReady) {
+                clearTimeout(loadingTimeout);
+                // Force hide loading screen
+                if (loadingScreen) {
+                    loadingScreen.style.display = 'none';
+                }
+            } else {
+                // Game not ready, show error
+                alert('Game is still initializing or failed to load. Please wait or refresh the page.');
             }
         });
     }
@@ -189,6 +194,12 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(loadingTimeout);
 
         if (loadingScreen) {
+            // Hide Start Game button since game failed
+            const startButton = document.getElementById('start-button');
+            if (startButton) {
+                startButton.style.display = 'none';
+            }
+
             const loadingText = loadingScreen.querySelector('.loading-text');
             if (loadingText) {
                 loadingText.textContent = 'Sorry, we encountered a loading issue. Please refresh to try again.';

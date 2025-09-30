@@ -85,12 +85,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Track game ready state
+    let gameReady = false;
+
     // Timeout to display error message if game fails to load
     const loadingTimeout = setTimeout(() => {
         if (loadingScreen) {
             const loadingText = loadingScreen.querySelector('.loading-text');
             if (loadingText) {
                 loadingText.textContent = 'Sorry, we encountered a loading issue. Please refresh to try again.';
+            }
+
+            // Hide Start Game button since game failed
+            const startButton = document.getElementById('start-button');
+            if (startButton) {
+                startButton.style.display = 'none';
             }
 
             // Add reload button
@@ -141,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
         game.events.once('ready', () => {
             console.log('🥕 Veggie Clash initialized successfully!');
             clearTimeout(loadingTimeout); // Clear the error timeout
+            gameReady = true; // Mark game as ready
 
             // Hide loading screen with fade effect
             if (loadingScreen) {

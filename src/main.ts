@@ -20,62 +20,141 @@ import { GameOverScene } from './game/scenes/GameOverScene';
 document.addEventListener('DOMContentLoaded', () => {
     // Hide loading screen once game starts
     const loadingScreen = document.getElementById('loading-screen');
-    
-    // Create the Phaser game configuration
-    const config: Phaser.Types.Core.GameConfig = {
-        ...GameConfig,
-        parent: 'game-container',
-        scene: [
-            BootScene,
-            PreloadScene,
-            MenuScene,
-            GameScene,
-            RunnerGameScene,
-            HUDScene,
-            PauseScene,
-            GameOverScene
-        ]
-    };
 
-    // Create the game instance
-    const game = new Phaser.Game(config);
-
-    // Handle game ready event
-    game.events.once('ready', () => {
-        console.log('🥕 Veggie Clash initialized successfully!');
-        
-        // Hide loading screen with fade effect
-        if (loadingScreen) {
-            loadingScreen.style.transition = 'opacity 0.5s ease-out';
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => {
+    // Handle start button click
+    const startButton = document.getElementById('start-button');
+    if (startButton) {
+        startButton.addEventListener('click', () => {
+            clearTimeout(loadingTimeout);
+            // Force hide loading screen
+            if (loadingScreen) {
                 loadingScreen.style.display = 'none';
-            }, 500);
-        }
-    });
-
-    // Handle window resize
-    window.addEventListener('resize', () => {
-        game.scale.refresh();
-    });
-
-    // Handle visibility change (pause when tab is hidden)
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            game.scene.pause('GameScene');
-        } else {
-            game.scene.resume('GameScene');
-        }
-    });
-
-    // Mobile device detection and setup
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    if (isMobile) {
-        setupMobileControls();
+            }
+        });
     }
 
-    // Store game instance globally for debugging
-    (window as any).game = game;
+    // Handle accessibility toggles
+    const highContrastToggle = document.getElementById('high-contrast-toggle');
+    const reduceMotionToggle = document.getElementById('reduce-motion-toggle');
+
+    if (highContrastToggle) {
+        highContrastToggle.addEventListener('click', () => {
+            document.body.classList.toggle('high-contrast');
+            highContrastToggle.classList.toggle('active');
+            const active = highContrastToggle.classList.contains('active');
+            highContrastToggle.textContent = active ? 'High Contrast (On)' : 'High Contrast';
+        });
+    }
+
+    if (reduceMotionToggle) {
+        reduceMotionToggle.addEventListener('click', () => {
+            document.body.classList.toggle('reduce-motion');
+            reduceMotionToggle.classList.toggle('active');
+            const active = reduceMotionToggle.classList.contains('active');
+            reduceMotionToggle.textContent = active ? 'Reduce Motion (On)' : 'Reduce Motion';
+        });
+    }
+
+    // Timeout to display error message if game fails to load
+    const loadingTimeout = setTimeout(() => {
+        if (loadingScreen) {
+            const loadingText = loadingScreen.querySelector('.loading-text');
+            if (loadingText) {
+                loadingText.textContent = 'Failed to load game. Check console for errors. Refresh to try again.';
+            }
+
+            // Add retry button
+            const retryButton = document.createElement('button');
+            retryButton.textContent = 'Retry';
+            retryButton.style.cssText = `
+                margin-top: 20px;
+                padding: 10px 20px;
+                font-size: 18px;
+                background: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            `;
+            retryButton.onclick = () => window.location.reload();
+            loadingScreen.appendChild(retryButton);
+        }
+    }, 15000); // 15 second timeout
+
+    try {
+        // Create the Phaser game configuration
+        const config: Phaser.Types.Core.GameConfig = {
+            ...GameConfig,
+            parent: 'game-container',
+            scene: [
+                BootScene,
+                PreloadScene,
+                MenuScene,
+                GameScene,
+                RunnerGameScene,
+                HUDScene,
+                PauseScene,
+                GameOverScene
+            ]
+        };
+
+        // Create the game instance
+        const game = new Phaser.Game(config);
+
+        // Handle game ready event
+        game.events.once('ready', () => {
+            console.log('🥕 Veggie Clash initialized successfully!');
+            clearTimeout(loadingTimeout); // Clear the error timeout
+
+            // Hide loading screen with fade effect
+            if (loadingScreen) {
+                loadingScreen.style.transition = 'opacity 0.5s ease-out';
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            game.scale.refresh();
+        });
+
+        // Handle visibility change (pause when tab is hidden)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                game.scene.pause('GameScene');
+            } else {
+                game.scene.resume('GameScene');
+            }
+        });
+
+        // Mobile device detection and setup
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+            setupMobileControls();
+        }
+
+        // Store game instance globally for debugging
+        (window as any).game = game;
+    } catch (error) {
+        console.error('Failed to initialize Veggie Clash:', error);
+        clearTimeout(loadingTimeout);
+
+        if (loadingScreen) {
+            const loadingText = loadingScreen.querySelector('.loading-text');
+            if (loadingText) {
+                loadingText.textContent = 'Game initialization failed. Please check console for errors.';
+            }
+
+            // Add error details
+            const errorMsg = document.createElement('div');
+            errorMsg.textContent = error instanceof Error ? error.message : 'Unknown error';
+            errorMsg.style.cssText = 'color: #ffcccc; font-size: 14px; margin-top: 10px;';
+            loadingScreen.appendChild(errorMsg);
+        }
+    }
 });
 
 /**

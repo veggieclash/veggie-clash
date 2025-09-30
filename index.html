@@ -66,6 +66,49 @@
             margin-top: 1rem;
             font-size: 1.2rem;
         }
+
+        .start-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .start-button:hover {
+            background: #45a049;
+        }
+
+        .accessibility-options {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-button {
+            padding: 5px 10px;
+            font-size: 14px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-button:hover, .toggle-button.active {
+            background: #1976D2;
+        }
+
+        .toggle-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -74,6 +117,11 @@
         <h1>🥕 Veggie Clash 🥕</h1>
         <div class="loading-spinner"></div>
         <div class="loading-text">Loading garden warfare...</div>
+        <button class="start-button" id="start-button">Start Game</button>
+        <div class="accessibility-options" id="accessibility-options">
+            <button class="toggle-button" id="high-contrast-toggle">High Contrast</button>
+            <button class="toggle-button" id="reduce-motion-toggle">Reduce Motion</button>
+        </div>
     </div>
     
     <!-- Game Container -->

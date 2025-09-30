@@ -84,11 +84,14 @@ export class BootScene extends Phaser.Scene {
     private createPlaceholderTextures(): void {
         // Generate Disney-style assets using AssetGenerator
         console.log('Generating Disney-style vegetable characters...');
-        
-        const assetGenerator = new AssetGenerator(this);
-        assetGenerator.generateAllAssets();
-        
-        console.log('Disney-style assets generated successfully!');
+
+        try {
+            const assetGenerator = new AssetGenerator(this);
+            assetGenerator.generateAllAssets();
+            console.log('Disney-style assets generated successfully!');
+        } catch (error) {
+            console.warn('Asset generation failed, proceeding without procedural assets:', error);
+        }
     }
 
 

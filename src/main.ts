@@ -33,25 +33,55 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Load and persist accessibility settings
+    const accessibilitySettings = {
+        highContrast: localStorage.getItem('veggie-clash-high-contrast') === 'true',
+        reduceMotion: localStorage.getItem('veggie-clash-reduce-motion') === 'true'
+    };
+
+    // Apply saved settings
+    if (accessibilitySettings.highContrast) {
+        document.body.classList.add('high-contrast');
+    }
+    if (accessibilitySettings.reduceMotion) {
+        document.body.classList.add('reduce-motion');
+    }
+
     // Handle accessibility toggles
     const highContrastToggle = document.getElementById('high-contrast-toggle');
     const reduceMotionToggle = document.getElementById('reduce-motion-toggle');
 
     if (highContrastToggle) {
+        // Set initial state from storage
+        if (accessibilitySettings.highContrast) {
+            highContrastToggle.classList.add('active');
+            highContrastToggle.textContent = 'High Contrast (On)';
+        }
+
         highContrastToggle.addEventListener('click', () => {
             document.body.classList.toggle('high-contrast');
+            accessibilitySettings.highContrast = !accessibilitySettings.highContrast;
             highContrastToggle.classList.toggle('active');
-            const active = highContrastToggle.classList.contains('active');
+            const active = accessibilitySettings.highContrast;
             highContrastToggle.textContent = active ? 'High Contrast (On)' : 'High Contrast';
+            localStorage.setItem('veggie-clash-high-contrast', active.toString());
         });
     }
 
     if (reduceMotionToggle) {
+        // Set initial state from storage
+        if (accessibilitySettings.reduceMotion) {
+            reduceMotionToggle.classList.add('active');
+            reduceMotionToggle.textContent = 'Reduce Motion (On)';
+        }
+
         reduceMotionToggle.addEventListener('click', () => {
             document.body.classList.toggle('reduce-motion');
+            accessibilitySettings.reduceMotion = !accessibilitySettings.reduceMotion;
             reduceMotionToggle.classList.toggle('active');
-            const active = reduceMotionToggle.classList.contains('active');
+            const active = accessibilitySettings.reduceMotion;
             reduceMotionToggle.textContent = active ? 'Reduce Motion (On)' : 'Reduce Motion';
+            localStorage.setItem('veggie-clash-reduce-motion', active.toString());
         });
     }
 
@@ -60,13 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (loadingScreen) {
             const loadingText = loadingScreen.querySelector('.loading-text');
             if (loadingText) {
-                loadingText.textContent = 'Failed to load game. Check console for errors. Refresh to try again.';
+                loadingText.textContent = 'Sorry, we encountered a loading issue. Please refresh to try again.';
             }
 
-            // Add retry button
-            const retryButton = document.createElement('button');
-            retryButton.textContent = 'Retry';
-            retryButton.style.cssText = `
+            // Add reload button
+            const reloadButton = document.createElement('button');
+            reloadButton.textContent = 'Refresh Page';
+            reloadButton.style.cssText = `
                 margin-top: 20px;
                 padding: 10px 20px;
                 font-size: 18px;
@@ -76,8 +106,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 border-radius: 5px;
                 cursor: pointer;
             `;
-            retryButton.onclick = () => window.location.reload();
-            loadingScreen.appendChild(retryButton);
+            reloadButton.onclick = () => window.location.reload();
+            loadingScreen.appendChild(reloadButton);
+
+            // Add support info
+            const supportInfo = document.createElement('div');
+            supportInfo.textContent = 'If issues persist, try a different browser or check console for technical details.';
+            supportInfo.style.cssText = 'font-size: 14px; color: #cccccc; margin-top: 10px;';
+            loadingScreen.appendChild(supportInfo);
         }
     }, 15000); // 15 second timeout
 
@@ -145,14 +181,30 @@ document.addEventListener('DOMContentLoaded', () => {
         if (loadingScreen) {
             const loadingText = loadingScreen.querySelector('.loading-text');
             if (loadingText) {
-                loadingText.textContent = 'Game initialization failed. Please check console for errors.';
+                loadingText.textContent = 'Sorry, we encountered a loading issue. Please refresh to try again.';
             }
 
-            // Add error details
-            const errorMsg = document.createElement('div');
-            errorMsg.textContent = error instanceof Error ? error.message : 'Unknown error';
-            errorMsg.style.cssText = 'color: #ffcccc; font-size: 14px; margin-top: 10px;';
-            loadingScreen.appendChild(errorMsg);
+            // Add reload button
+            const reloadButton = document.createElement('button');
+            reloadButton.textContent = 'Refresh Page';
+            reloadButton.style.cssText = `
+                margin-top: 20px;
+                padding: 10px 20px;
+                font-size: 18px;
+                background: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            `;
+            reloadButton.onclick = () => window.location.reload();
+            loadingScreen.appendChild(reloadButton);
+
+            // Add support info
+            const supportInfo = document.createElement('div');
+            supportInfo.textContent = 'If issues persist, try a different browser or check console for technical details.';
+            supportInfo.style.cssText = 'font-size: 14px; color: #cccccc; margin-top: 10px;';
+            loadingScreen.appendChild(supportInfo);
         }
     }
 });

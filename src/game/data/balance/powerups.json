@@ -1,0 +1,31 @@
+{
+  "RANCH_DIP": {
+    "label": "Ranch Dip",
+    "effect": "damage_multiplier",
+    "multiplier": 1.5,
+    "duration_s": 10
+  },
+  "FERTILIZER": {
+    "label": "Fertilizer",
+    "effect": "fire_rate_multiplier",
+    "multiplier": 1.4,
+    "duration_s": 10
+  },
+  "OLIVE_OIL": {
+    "label": "Olive Oil",
+    "effect": "move_speed_multiplier",
+    "multiplier": 1.15,
+    "duration_s": 8
+  },
+  "COMPOST_HEART": {
+    "label": "Compost Heart",
+    "effect": "instant_heal",
+    "heal_amount": 25
+  },
+  "spawn_settings": {
+    "drop_chance": 0.2,
+    "spawn_delay": 1000,
+    "despawn_time": 15000,
+    "max_active": 3
+  }
+}

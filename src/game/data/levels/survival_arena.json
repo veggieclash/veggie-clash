@@ -1,0 +1,314 @@
+{
+  "name": "Survival Arena",
+  "description": "How long can you survive in the endless veggie onslaught? Test your skills in this circular arena!",
+  "background": "bg_arena",
+  "music": "music_game",
+  "difficulty": 3,
+  "tutorial": false,
+  "mode": "survival",
+  
+  "bounds": {
+    "width": 800,
+    "height": 800
+  },
+  
+  "player_spawn": {
+    "x": 400,
+    "y": 400
+  },
+  
+  "arena": {
+    "type": "circular",
+    "center": { "x": 400, "y": 400 },
+    "radius": 350,
+    "wall_thickness": 20
+  },
+  
+  "obstacles": [
+    {
+      "type": "rock_pillar",
+      "x": 200,
+      "y": 200,
+      "width": 40,
+      "height": 40,
+      "destructible": false
+    },
+    {
+      "type": "rock_pillar",
+      "x": 600,
+      "y": 200,
+      "width": 40,
+      "height": 40,
+      "destructible": false
+    },
+    {
+      "type": "rock_pillar",
+      "x": 200,
+      "y": 600,
+      "width": 40,
+      "height": 40,
+      "destructible": false
+    },
+    {
+      "type": "rock_pillar",
+      "x": 600,
+      "y": 600,
+      "width": 40,
+      "height": 40,
+      "destructible": false
+    },
+    {
+      "type": "cover_wall",
+      "x": 350,
+      "y": 250,
+      "width": 100,
+      "height": 20,
+      "destructible": true,
+      "health": 75
+    },
+    {
+      "type": "cover_wall",
+      "x": 250,
+      "y": 350,
+      "width": 20,
+      "height": 100,
+      "destructible": true,
+      "health": 75
+    },
+    {
+      "type": "cover_wall",
+      "x": 530,
+      "y": 350,
+      "width": 20,
+      "height": 100,
+      "destructible": true,
+      "health": 75
+    },
+    {
+      "type": "cover_wall",
+      "x": 350,
+      "y": 530,
+      "width": 100,
+      "height": 20,
+      "destructible": true,
+      "health": 75
+    }
+  ],
+  
+  "spawn_points": [
+    { "x": 400, "y": 80, "type": "edge" },
+    { "x": 720, "y": 400, "type": "edge" },
+    { "x": 400, "y": 720, "type": "edge" },
+    { "x": 80, "y": 400, "type": "edge" },
+    { "x": 600, "y": 150, "type": "edge" },
+    { "x": 650, "y": 600, "type": "edge" },
+    { "x": 200, "y": 650, "type": "edge" },
+    { "x": 150, "y": 200, "type": "edge" },
+    { "x": 550, "y": 250, "type": "edge" },
+    { "x": 650, "y": 350, "type": "edge" },
+    { "x": 550, "y": 550, "type": "edge" },
+    { "x": 350, "y": 650, "type": "edge" },
+    { "x": 250, "y": 550, "type": "edge" },
+    { "x": 150, "y": 450, "type": "edge" },
+    { "x": 250, "y": 250, "type": "edge" },
+    { "x": 450, "y": 150, "type": "edge" }
+  ],
+  
+  "wave_system": {
+    "base_spawn_rate": 2000,
+    "difficulty_scaling": 1.15,
+    "wave_duration": 60000,
+    "break_duration": 10000,
+    "elite_wave_interval": 3,
+    "boss_wave_interval": 10,
+    
+    "enemy_progression": {
+      "waves_1_3": {
+        "tomato": { "weight": 60, "max_count": 8 },
+        "onion": { "weight": 30, "max_count": 4 },
+        "pepper": { "weight": 10, "max_count": 2 }
+      },
+      "waves_4_6": {
+        "tomato": { "weight": 45, "max_count": 10 },
+        "onion": { "weight": 35, "max_count": 6 },
+        "pepper": { "weight": 15, "max_count": 3 },
+        "broccoli": { "weight": 5, "max_count": 1 }
+      },
+      "waves_7_9": {
+        "tomato": { "weight": 35, "max_count": 12 },
+        "onion": { "weight": 30, "max_count": 8 },
+        "pepper": { "weight": 20, "max_count": 4 },
+        "broccoli": { "weight": 15, "max_count": 2 }
+      },
+      "waves_10_plus": {
+        "tomato": { "weight": 25, "max_count": 15 },
+        "onion": { "weight": 25, "max_count": 10 },
+        "pepper": { "weight": 25, "max_count": 6 },
+        "broccoli": { "weight": 20, "max_count": 3 },
+        "eggplant": { "weight": 5, "max_count": 1 }
+      }
+    },
+    
+    "elite_modifiers": [
+      "double_speed",
+      "extra_health",
+      "explosive_death",
+      "shield_regeneration",
+      "homing_projectiles"
+    ],
+    
+    "boss_waves": [
+      {
+        "wave": 10,
+        "boss": "eggplant",
+        "minions": [
+          { "type": "tomato", "count": 6 },
+          { "type": "pepper", "count": 2 }
+        ]
+      },
+      {
+        "wave": 20,
+        "boss": "eggplant",
+        "boss_modifier": "enraged",
+        "minions": [
+          { "type": "broccoli", "count": 2 },
+          { "type": "pepper", "count": 4 },
+          { "type": "onion", "count": 6 }
+        ]
+      }
+    ]
+  },
+  
+  "powerup_system": {
+    "spawn_interval": 15000,
+    "max_active": 3,
+    "spawn_positions": [
+      { "x": 300, "y": 300 },
+      { "x": 500, "y": 300 },
+      { "x": 300, "y": 500 },
+      { "x": 500, "y": 500 },
+      { "x": 400, "y": 200 },
+      { "x": 600, "y": 400 },
+      { "x": 400, "y": 600 },
+      { "x": 200, "y": 400 }
+    ],
+    
+    "powerup_weights": {
+      "compost_heart": 25,
+      "ranch_dip": 20,
+      "olive_oil": 20,
+      "fertilizer": 15,
+      "ammo_crate": 15,
+      "shield_boost": 5
+    },
+    
+    "special_events": [
+      {
+        "type": "power_surge",
+        "trigger_wave": [5, 15, 25],
+        "description": "All weapons temporarily upgraded!",
+        "duration": 30000,
+        "effects": {
+          "damage_multiplier": 2.0,
+          "fire_rate_multiplier": 1.5
+        }
+      },
+      {
+        "type": "health_rain",
+        "trigger_wave": [8, 18, 28],
+        "description": "Health pickups rain from the sky!",
+        "duration": 10000,
+        "spawn_rate": 500
+      },
+      {
+        "type": "weapon_cache",
+        "trigger_wave": [12, 22, 32],
+        "description": "Rare weapons appear in the arena!",
+        "weapons": ["beet_bazooka", "corn_cannon"]
+      }
+    ]
+  },
+  
+  "scoring": {
+    "base_kill_score": 10,
+    "combo_multiplier_max": 5.0,
+    "combo_decay_time": 3000,
+    "wave_completion_bonus": 100,
+    "elite_kill_bonus": 50,
+    "boss_kill_bonus": 500,
+    "survival_time_bonus": 1,
+    "headshot_multiplier": 1.5,
+    "no_damage_wave_bonus": 200
+  },
+  
+  "achievements": [
+    {
+      "id": "survivor_novice",
+      "name": "Garden Rookie",
+      "description": "Survive 5 waves in the arena",
+      "requirement": { "waves_survived": 5 },
+      "reward": { "score_bonus": 500 }
+    },
+    {
+      "id": "survivor_veteran",
+      "name": "Seasoned Fighter",
+      "description": "Survive 10 waves in the arena",
+      "requirement": { "waves_survived": 10 },
+      "reward": { "score_bonus": 1000 }
+    },
+    {
+      "id": "survivor_master",
+      "name": "Arena Champion",
+      "description": "Survive 20 waves in the arena",
+      "requirement": { "waves_survived": 20 },
+      "reward": { "score_bonus": 2500 }
+    },
+    {
+      "id": "combo_master",
+      "name": "Combo King",
+      "description": "Achieve a 5x combo multiplier",
+      "requirement": { "max_combo": 5.0 },
+      "reward": { "score_bonus": 300 }
+    },
+    {
+      "id": "boss_slayer",
+      "name": "Boss Terminator",
+      "description": "Defeat 3 bosses in a single run",
+      "requirement": { "bosses_defeated": 3 },
+      "reward": { "score_bonus": 1500 }
+    },
+    {
+      "id": "untouchable",
+      "name": "Untouchable",
+      "description": "Complete a wave without taking damage",
+      "requirement": { "no_damage_wave": true },
+      "reward": { "score_bonus": 400 }
+    },
+    {
+      "id": "glass_cannon",
+      "name": "Glass Cannon",
+      "description": "Survive with 10 HP or less for 60 seconds",
+      "requirement": { "low_health_time": 60000 },
+      "reward": { "score_bonus": 600 }
+    }
+  ],
+  
+  "objectives": [
+    {
+      "type": "survive_time",
+      "description": "Survive as long as possible",
+      "required": -1
+    },
+    {
+      "type": "achieve_score",
+      "description": "Beat your high score",
+      "required": -1
+    }
+  ],
+  
+  "completion_criteria": {
+    "mode": "endless",
+    "high_score_tracking": true,
+    "leaderboard": true
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "powerups": {
+    "ranch_dip": {
+      "name": "Ranch Dip",
+      "emoji": "🥗",
+      "effect": "damage_boost",
+      "value": 1.5,
+      "duration": 10000,
+      "description": "Increases damage by 50% for 10 seconds"
+    },
+    "olive_oil": {
+      "name": "Olive Oil",
+      "emoji": "💨",
+      "effect": "speed_boost",
+      "value": 1.3,
+      "duration": 8000,
+      "description": "Increases movement speed by 30% for 8 seconds"
+    },
+    "fertilizer": {
+      "name": "Fertilizer",
+      "emoji": "⚡",
+      "effect": "rapid_fire",
+      "value": 0.5,
+      "duration": 6000,
+      "description": "Reduces fire rate by 50% for 6 seconds"
+    },
+    "compost_heart": {
+      "name": "Compost Heart",
+      "emoji": "❤️",
+      "effect": "heal",
+      "value": 25,
+      "duration": 0,
+      "description": "Instantly restores 25 health points"
+    }
+  },
+  "spawn_settings": {
+    "drop_chance": 0.2,
+    "spawn_delay": 1000,
+    "despawn_time": 15000,
+    "max_active": 3
+  }
+}

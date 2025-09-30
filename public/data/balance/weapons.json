@@ -1,0 +1,43 @@
+{
+  "weapons": {
+    "pea_shooter": {
+      "name": "Pea Shooter",
+      "damage": 10,
+      "fireRate": 150,
+      "ammo": -1,
+      "projectileSpeed": 400,
+      "projectileTexture": "projectile-pea",
+      "description": "Infinite ammo, rapid fire. The trusty starter weapon."
+    },
+    "corn_cannon": {
+      "name": "Corn Cannon",
+      "damage": 25,
+      "fireRate": 400,
+      "ammo": 30,
+      "projectileSpeed": 350,
+      "projectileTexture": "projectile-corn",
+      "description": "High damage burst fire with spread pattern."
+    },
+    "beet_bazooka": {
+      "name": "Beet Bazooka",
+      "damage": 50,
+      "fireRate": 800,
+      "ammo": 10,
+      "projectileSpeed": 300,
+      "projectileTexture": "projectile-beet",
+      "description": "Devastating damage with area effect. Limited ammo."
+    }
+  },
+  "upgrades": {
+    "damage_multiplier": {
+      "level_1": 1.0,
+      "level_2": 1.25,
+      "level_3": 1.5
+    },
+    "fire_rate_multiplier": {
+      "level_1": 1.0,
+      "level_2": 1.2,
+      "level_3": 1.4
+    }
+  }
+}

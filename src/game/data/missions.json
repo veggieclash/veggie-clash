@@ -1,0 +1,76 @@
+{
+  "missions": [
+    {
+      "id": "mission_1",
+      "name": "Defend the Garden",
+      "description": "Hold the line against endless waves of rogue veggies for 3 minutes.",
+      "objectives": {
+        "type": "survival_timer",
+        "duration_s": 180
+      },
+      "waves": [
+        {
+          "wave": 1,
+          "enemies": [
+            { "type": "tomato_trooper", "count": 6 },
+            { "type": "onion_operative", "count": 3 }
+          ]
+        },
+        {
+          "wave": 2,
+          "enemies": [
+            { "type": "tomato_trooper", "count": 8 },
+            { "type": "onion_operative", "count": 5 },
+            { "type": "pepper_sniper", "count": 2 }
+          ]
+        }
+      ],
+      "rewards": {
+        "unlock": "mission_2",
+        "powerup_drop_rate_bonus": 0.05
+      }
+    },
+    {
+      "id": "mission_2",
+      "name": "Greenhouse Infiltration",
+      "description": "Clear the greenhouse of all threats and confront General Eggplant.",
+      "objectives": {
+        "type": "elimination",
+        "enemy_total": 30,
+        "boss_trigger": "eggplant_boss"
+      },
+      "waves": [
+        {
+          "wave": 1,
+          "enemies": [
+            { "type": "tomato_trooper", "count": 6 },
+            { "type": "onion_operative", "count": 6 }
+          ]
+        },
+        {
+          "wave": 2,
+          "enemies": [
+            { "type": "pepper_sniper", "count": 4 },
+            { "type": "broccoli_brute", "count": 2 }
+          ]
+        },
+        {
+          "wave": 3,
+          "enemies": [
+            { "type": "tomato_trooper", "count": 6 },
+            { "type": "pepper_sniper", "count": 3 },
+            { "type": "broccoli_brute", "count": 2 }
+          ]
+        }
+      ],
+      "boss": {
+        "type": "eggplant_boss",
+        "spawn_point": { "x": 800, "y": 600 }
+      },
+      "rewards": {
+        "unlock": null,
+        "achievement": "greenhouse_cleared"
+      }
+    }
+  ]
+}

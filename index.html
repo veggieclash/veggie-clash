@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Veggie Clash - A family-friendly arcade shooter where vegetables battle it out in the garden" />
+    <meta name="keywords" content="game, arcade, shooter, vegetables, family-friendly, browser game" />
+    <meta name="author" content="Veggie Clash Team" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Veggie Clash" />
+    <meta property="og:description" content="A family-friendly arcade shooter where vegetables battle it out in the garden" />
+    <meta property="og:image" content="./public/favicon.png" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Veggie Clash" />
+    <meta property="twitter:description" content="A family-friendly arcade shooter where vegetables battle it out in the garden" />
+    <meta property="twitter:image" content="./public/favicon.png" />
+    
+    <title>Veggie Clash</title>
+    <link rel="icon" type="image/png" href="./public/favicon.png" />
+    <link rel="stylesheet" href="./src/styles/global.css" />
+    
+    <style>
+        /* Loading screen styles */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        #loading-screen h1 {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <h1>🥕 Veggie Clash 🥕</h1>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading garden warfare...</div>
+    </div>
+    
+    <!-- Game Container -->
+    <div id="game-container"></div>
+    
+    <!-- Mobile Controls (will be shown/hidden by game) -->
+    <div id="mobile-controls" style="display: none;">
+        <div id="virtual-joystick"></div>
+        <div id="mobile-buttons">
+            <button id="shoot-button">SHOOT</button>
+            <button id="dash-button">DASH</button>
+            <button id="pause-button">⏸️</button>
+        </div>
+    </div>
+    
+    <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+{
+  "enemies": {
+    "tomato": {
+      "name": "Tomato Trooper",
+      "health": 20,
+      "speed": 80,
+      "damage": 8,
+      "attackCooldown": 2000,
+      "attackRange": 200,
+      "scoreValue": 100,
+      "description": "Lobs projectiles in arcing trajectories."
+    },
+    "onion": {
+      "name": "Onion Operative",
+      "health": 15,
+      "speed": 120,
+      "damage": 12,
+      "attackCooldown": 1500,
+      "attackRange": 50,
+      "scoreValue": 120,
+      "description": "Fast melee attacker with rush ability."
+    },
+    "pepper": {
+      "name": "Pepper Sniper",
+      "health": 12,
+      "speed": 60,
+      "damage": 15,
+      "attackCooldown": 3000,
+      "attackRange": 300,
+      "scoreValue": 150,
+      "description": "Long-range laser attacks with precision."
+    },
+    "broccoli": {
+      "name": "Broccoli Brute",
+      "health": 40,
+      "speed": 40,
+      "damage": 20,
+      "attackCooldown": 2500,
+      "attackRange": 80,
+      "scoreValue": 200,
+      "description": "Tank enemy with area stomp attacks."
+    },
+    "eggplant": {
+      "name": "General Eggplant",
+      "health": 200,
+      "speed": 30,
+      "damage": 25,
+      "attackCooldown": 1000,
+      "attackRange": 250,
+      "scoreValue": 1000,
+      "description": "Boss enemy with multi-projectile spread attacks."
+    }
+  },
+  "spawn_weights": {
+    "wave_1_5": {
+      "tomato": 0.5,
+      "onion": 0.3,
+      "pepper": 0.2
+    },
+    "wave_6_10": {
+      "tomato": 0.4,
+      "onion": 0.3,
+      "pepper": 0.2,
+      "broccoli": 0.1
+    },
+    "wave_11_plus": {
+      "tomato": 0.3,
+      "onion": 0.3,
+      "pepper": 0.2,
+      "broccoli": 0.2
+    }
+  }
+}

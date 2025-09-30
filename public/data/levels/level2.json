@@ -1,0 +1,262 @@
+{
+  "name": "Greenhouse Gauntlet",
+  "description": "Navigate tight corridors and watch out for glass hazards in this intense greenhouse battle!",
+  "background": "bg_greenhouse",
+  "music": "music_game",
+  "difficulty": 2,
+  "tutorial": false,
+  
+  "bounds": {
+    "width": 1000,
+    "height": 800
+  },
+  
+  "player_spawn": {
+    "x": 100,
+    "y": 400
+  },
+  
+  "obstacles": [
+    {
+      "type": "glass_wall",
+      "x": 200,
+      "y": 100,
+      "width": 20,
+      "height": 200,
+      "destructible": true,
+      "health": 25,
+      "damage_on_break": 10
+    },
+    {
+      "type": "glass_wall",
+      "x": 400,
+      "y": 300,
+      "width": 20,
+      "height": 200,
+      "destructible": true,
+      "health": 25,
+      "damage_on_break": 10
+    },
+    {
+      "type": "glass_wall",
+      "x": 600,
+      "y": 100,
+      "width": 20,
+      "height": 200,
+      "destructible": true,
+      "health": 25,
+      "damage_on_break": 10
+    },
+    {
+      "type": "glass_wall",
+      "x": 800,
+      "y": 300,
+      "width": 20,
+      "height": 200,
+      "destructible": true,
+      "health": 25,
+      "damage_on_break": 10
+    },
+    {
+      "type": "planter_box",
+      "x": 300,
+      "y": 150,
+      "width": 80,
+      "height": 40,
+      "destructible": true,
+      "health": 40
+    },
+    {
+      "type": "planter_box",
+      "x": 500,
+      "y": 350,
+      "width": 80,
+      "height": 40,
+      "destructible": true,
+      "health": 40
+    },
+    {
+      "type": "planter_box",
+      "x": 700,
+      "y": 150,
+      "width": 80,
+      "height": 40,
+      "destructible": true,
+      "health": 40
+    },
+    {
+      "type": "support_beam",
+      "x": 450,
+      "y": 500,
+      "width": 40,
+      "height": 100,
+      "destructible": false
+    },
+    {
+      "type": "water_tank",
+      "x": 750,
+      "y": 600,
+      "width": 60,
+      "height": 80,
+      "destructible": false
+    }
+  ],
+  
+  "spawn_points": [
+    { "x": 50, "y": 50, "type": "corner" },
+    { "x": 950, "y": 50, "type": "corner" },
+    { "x": 50, "y": 750, "type": "corner" },
+    { "x": 950, "y": 750, "type": "corner" },
+    { "x": 500, "y": 50, "type": "top" },
+    { "x": 500, "y": 750, "type": "bottom" },
+    { "x": 950, "y": 400, "type": "right" },
+    { "x": 150, "y": 200, "type": "corridor" },
+    { "x": 350, "y": 400, "type": "corridor" },
+    { "x": 550, "y": 200, "type": "corridor" },
+    { "x": 750, "y": 400, "type": "corridor" }
+  ],
+  
+  "waves": [
+    {
+      "wave": 1,
+      "delay": 2000,
+      "enemies": [
+        { "type": "tomato", "count": 4, "spawn_delay": 800 },
+        { "type": "onion", "count": 2, "spawn_delay": 1500 }
+      ]
+    },
+    {
+      "wave": 2,
+      "delay": 8000,
+      "enemies": [
+        { "type": "pepper", "count": 2, "spawn_delay": 1000 },
+        { "type": "tomato", "count": 3, "spawn_delay": 600 },
+        { "type": "onion", "count": 2, "spawn_delay": 1200 }
+      ]
+    },
+    {
+      "wave": 3,
+      "delay": 15000,
+      "enemies": [
+        { "type": "broccoli", "count": 1, "spawn_delay": 2000 },
+        { "type": "pepper", "count": 2, "spawn_delay": 1500 },
+        { "type": "tomato", "count": 4, "spawn_delay": 500 }
+      ]
+    },
+    {
+      "wave": 4,
+      "delay": 25000,
+      "enemies": [
+        { "type": "tomato", "count": 5, "spawn_delay": 400 },
+        { "type": "onion", "count": 3, "spawn_delay": 800 },
+        { "type": "pepper", "count": 3, "spawn_delay": 1200 },
+        { "type": "broccoli", "count": 1, "spawn_delay": 3000 }
+      ]
+    },
+    {
+      "wave": 5,
+      "delay": 35000,
+      "enemies": [
+        { "type": "pepper", "count": 4, "spawn_delay": 800 },
+        { "type": "broccoli", "count": 2, "spawn_delay": 2000 },
+        { "type": "tomato", "count": 6, "spawn_delay": 300 }
+      ]
+    },
+    {
+      "wave": 6,
+      "delay": 50000,
+      "boss": true,
+      "enemies": [
+        { "type": "eggplant", "count": 1, "spawn_delay": 3000 }
+      ]
+    }
+  ],
+  
+  "powerups": [
+    {
+      "type": "compost_heart",
+      "spawn_chance": 0.25,
+      "positions": [
+        { "x": 250, "y": 250 },
+        { "x": 450, "y": 450 },
+        { "x": 650, "y": 250 },
+        { "x": 350, "y": 600 }
+      ]
+    },
+    {
+      "type": "ranch_dip",
+      "spawn_chance": 0.2,
+      "positions": [
+        { "x": 150, "y": 350 },
+        { "x": 550, "y": 150 },
+        { "x": 750, "y": 500 }
+      ]
+    },
+    {
+      "type": "olive_oil",
+      "spawn_chance": 0.15,
+      "positions": [
+        { "x": 350, "y": 250 },
+        { "x": 650, "y": 450 }
+      ]
+    },
+    {
+      "type": "fertilizer",
+      "spawn_chance": 0.1,
+      "positions": [
+        { "x": 500, "y": 600 }
+      ]
+    }
+  ],
+  
+  "hazards": [
+    {
+      "type": "glass_shards",
+      "trigger": "glass_wall_destroyed",
+      "damage": 5,
+      "duration": 3000,
+      "area_radius": 50
+    },
+    {
+      "type": "steam_vent",
+      "x": 800,
+      "y": 650,
+      "width": 40,
+      "height": 40,
+      "damage": 2,
+      "interval": 2000,
+      "warning_time": 1000
+    }
+  ],
+  
+  "objectives": [
+    {
+      "type": "survive_waves",
+      "description": "Survive all waves and defeat the boss",
+      "required": 6
+    },
+    {
+      "type": "defeat_boss",
+      "description": "Defeat General Eggplant",
+      "required": true
+    },
+    {
+      "type": "minimize_glass_damage",
+      "description": "Take less than 20 damage from glass hazards",
+      "required": 20,
+      "bonus_score": 300
+    }
+  ],
+  
+  "completion_criteria": {
+    "waves_completed": 6,
+    "boss_defeated": true,
+    "score_threshold": 2500,
+    "time_limit": 480000
+  },
+  
+  "rewards": {
+    "score_bonus": 1000,
+    "unlock_mode": "survival"
+  }
+}

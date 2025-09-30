@@ -1,0 +1,166 @@
+{
+  "name": "Garden Paths",
+  "description": "Welcome to the garden! Learn the ropes while defending against rogue veggies.",
+  "background": "bg_garden_paths",
+  "music": "music_game",
+  "difficulty": 1,
+  "tutorial": true,
+  
+  "bounds": {
+    "width": 1200,
+    "height": 900
+  },
+  
+  "player_spawn": {
+    "x": 400,
+    "y": 450
+  },
+  
+  "obstacles": [
+    {
+      "type": "bush",
+      "x": 200,
+      "y": 200,
+      "width": 60,
+      "height": 60,
+      "destructible": false
+    },
+    {
+      "type": "rock",
+      "x": 600,
+      "y": 150,
+      "width": 40,
+      "height": 40,
+      "destructible": false
+    },
+    {
+      "type": "tree",
+      "x": 900,
+      "y": 300,
+      "width": 80,
+      "height": 120,
+      "destructible": false
+    },
+    {
+      "type": "fence",
+      "x": 100,
+      "y": 600,
+      "width": 200,
+      "height": 20,
+      "destructible": true,
+      "health": 50
+    },
+    {
+      "type": "bush",
+      "x": 800,
+      "y": 700,
+      "width": 60,
+      "height": 60,
+      "destructible": false
+    }
+  ],
+  
+  "spawn_points": [
+    { "x": 50, "y": 50, "type": "corner" },
+    { "x": 1150, "y": 50, "type": "corner" },
+    { "x": 50, "y": 850, "type": "corner" },
+    { "x": 1150, "y": 850, "type": "corner" },
+    { "x": 600, "y": 50, "type": "top" },
+    { "x": 600, "y": 850, "type": "bottom" },
+    { "x": 50, "y": 450, "type": "left" },
+    { "x": 1150, "y": 450, "type": "right" }
+  ],
+  
+  "waves": [
+    {
+      "wave": 1,
+      "delay": 3000,
+      "tutorial_text": "Use WASD to move and mouse to aim and shoot!",
+      "enemies": [
+        { "type": "tomato", "count": 3, "spawn_delay": 1000 }
+      ]
+    },
+    {
+      "wave": 2,
+      "delay": 8000,
+      "tutorial_text": "Press SPACE to dash and avoid enemy attacks!",
+      "enemies": [
+        { "type": "tomato", "count": 2, "spawn_delay": 800 },
+        { "type": "onion", "count": 1, "spawn_delay": 2000 }
+      ]
+    },
+    {
+      "wave": 3,
+      "delay": 12000,
+      "tutorial_text": "Use 1, 2, 3 keys to switch weapons!",
+      "enemies": [
+        { "type": "tomato", "count": 3, "spawn_delay": 600 },
+        { "type": "onion", "count": 2, "spawn_delay": 1200 }
+      ]
+    },
+    {
+      "wave": 4,
+      "delay": 15000,
+      "tutorial_text": "Watch out for the Pepper Sniper's laser sight!",
+      "enemies": [
+        { "type": "tomato", "count": 2, "spawn_delay": 1000 },
+        { "type": "onion", "count": 1, "spawn_delay": 1500 },
+        { "type": "pepper", "count": 1, "spawn_delay": 3000 }
+      ]
+    },
+    {
+      "wave": 5,
+      "delay": 20000,
+      "tutorial_text": "Final wave! Take out the Broccoli Brute!",
+      "enemies": [
+        { "type": "tomato", "count": 3, "spawn_delay": 800 },
+        { "type": "onion", "count": 2, "spawn_delay": 1200 },
+        { "type": "broccoli", "count": 1, "spawn_delay": 4000 }
+      ]
+    }
+  ],
+  
+  "powerups": [
+    {
+      "type": "compost_heart",
+      "spawn_chance": 0.3,
+      "positions": [
+        { "x": 300, "y": 300 },
+        { "x": 700, "y": 500 },
+        { "x": 500, "y": 200 }
+      ]
+    },
+    {
+      "type": "ranch_dip",
+      "spawn_chance": 0.2,
+      "positions": [
+        { "x": 400, "y": 600 },
+        { "x": 800, "y": 400 }
+      ]
+    }
+  ],
+  
+  "objectives": [
+    {
+      "type": "survive_waves",
+      "description": "Survive all 5 waves",
+      "required": 5
+    },
+    {
+      "type": "tutorial_complete",
+      "description": "Complete the tutorial",
+      "required": true
+    }
+  ],
+  
+  "completion_criteria": {
+    "waves_completed": 5,
+    "score_threshold": 1000,
+    "time_limit": 300000
+  },
+  
+  "rewards": {
+    "score_bonus": 500,
+    "unlock_level": "level2"
+  }
+}

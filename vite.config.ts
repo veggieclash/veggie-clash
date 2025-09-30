@@ -3,7 +3,7 @@ import { resolve } from 'path'
 
 export default defineConfig({
   // GitHub Pages deployment configuration
-  base: process.env.NODE_ENV === 'production' ? '/veggie-clash/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '/' : '/',
   
   // Build configuration
   build: {

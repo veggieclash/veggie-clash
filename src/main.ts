@@ -132,9 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 15000); // 15 second timeout
 
     try {
-        // Create the Phaser game configuration
+        // Create the Phaser game configuration with forced Canvas renderer
         const config: Phaser.Types.Core.GameConfig = {
             ...GameConfig,
+            type: Phaser.CANVAS, // Force Canvas renderer to avoid WebGL getParameter errors
             parent: 'game-container',
             scene: [
                 BootScene,

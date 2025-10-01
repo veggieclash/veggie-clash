@@ -16,6 +16,7 @@ import { EnemyHealthBarManager } from '../entities/EnemyHealthBar';
 import { AssetKey } from '../systems/AssetGenerator';
 import { AssetValidator } from '../systems/AssetValidator';
 import BackgroundManager from '../systems/BackgroundManager';
+import { GameState } from '../state/GameState';
 
 export interface GameData {
     mode: 'campaign' | 'survival';
@@ -28,14 +29,16 @@ export class GameScene extends Phaser.Scene {
     private playerProjectiles!: Phaser.GameObjects.Group;
     private enemyProjectiles!: Phaser.GameObjects.Group;
     private powerUps!: Phaser.GameObjects.Group;
-    
+
     private gameData!: GameData;
     private score: number = 0;
     private wave: number = 1;
     private enemiesKilled: number = 0;
     private gameTime: number = 0;
     private lastEnemySpawn: number = 0;
-    
+    private isPaused = false;
+    private pauseOverlay?: Phaser.GameObjects.Container;
+
     // Visual systems
     private backgroundManager!: BackgroundManager;
     private parallaxManager!: ParallaxManager;
@@ -56,7 +59,15 @@ export class GameScene extends Phaser.Scene {
 
     init(data: GameData): void {
         this.gameData = data || { mode: 'campaign', level: 1 };
-        this.score = 0;
+
+        // Reset game state for new game
+        const gameState = GameState.getInstance();
+        gameState.reset();
+        gameState.setLevel(this.gameData.level || 1);
+        gameState.lastMode = this.gameData.mode;
+
+        // Initialize local copies from state
+        this.score = gameState.score;
         this.wave = 1;
         this.enemiesKilled = 0;
         this.gameTime = 0;
@@ -66,7 +77,7 @@ export class GameScene extends Phaser.Scene {
     create(): void {
         // Initialize visual systems
         this.initializeSystems();
-        
+
         this.createWorld();
         this.createPlayer();
         this.createGroups();
@@ -74,10 +85,13 @@ export class GameScene extends Phaser.Scene {
         this.setupPhysics();
         this.startHUD();
         this.setupMobileControls();
-        
+
+        // Show tutorial if first time in this mode
+        this.showTutorialIfNeeded();
+
         // Start background music
         this.startGameMusic();
-        
+
         console.log(`🥕 Starting ${this.gameData.mode} mode`, this.gameData);
     }
 
@@ -367,7 +381,7 @@ export class GameScene extends Phaser.Scene {
             
             // Play hit sound using AudioManager
             if (this.audioManager) {
-                this.audioManager.playHitSound('player', damage);
+                this.audioManager.playHitSound();
             }
         }
     }
@@ -383,15 +397,17 @@ export class GameScene extends Phaser.Scene {
             this.animationManager.createImpactParticles(enemy.x, enemy.y, 'seed');
         }
         
-        // Play hit sound using AudioManager
-        if (this.audioManager) {
-            this.audioManager.playHitSound('enemy', damage);
-        }
+            // TODO: Play hit sound using AudioManager
+            // if (this.audioManager) {
+            //     this.audioManager.playHitSound('enemy');
+            // }
         
         if (enemy.health <= 0) {
             this.enemiesKilled++;
-            this.score += 100;
-            
+            const gameState = GameState.getInstance();
+            gameState.updateScore(100);
+            this.score = gameState.score;
+
             // Enhanced explosion effect for destroyed enemies
             if (this.animationManager) {
                 this.animationManager.createImpactParticles(enemy.x, enemy.y, 'explode');
@@ -399,14 +415,90 @@ export class GameScene extends Phaser.Scene {
             if (this.audioManager) {
                 this.audioManager.playExplosion('small');
             }
-            
+
             enemy.destroy();
-            
-            // Chance to spawn power-up
+
+        // Chance to spawn power-up
             if (Math.random() < 0.2) {
                 this.spawnPowerUp(enemy.x, enemy.y);
             }
         }
+    }
+
+    private showTutorialIfNeeded(): void {
+        const gameState = GameState.getInstance();
+        const tutorialFlag = `tutorial_shown_${this.gameData.mode}`;
+
+        if (!gameState.getFlag(tutorialFlag)) {
+            this.showTutorial();
+            gameState.setFlag(tutorialFlag, true);
+        }
+    }
+
+    private showTutorial(): void {
+        const { width, height } = this.cameras.main;
+
+        // Create overlay background
+        const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.8);
+        overlay.setOrigin(0);
+        overlay.setInteractive();
+
+        // Tutorial panel
+        const panel = this.add.rectangle(width / 2, height / 2, 600, 450, COLORS.UI_BACKGROUND, 0.95);
+        panel.setStrokeStyle(4, COLORS.UI_TEXT);
+
+        // Title
+        this.add.text(width / 2, height / 2 - 200, '🌱 Welcome to Veggie Clash!', {
+            fontFamily: 'Arial',
+            fontSize: '32px',
+            color: '#ffffff'
+        }).setOrigin(0.5);
+
+        // Controls instructions
+        const instructions = this.gameData.mode === 'campaign' ? [
+            '🎯 WASD or Arrow Keys: Move around',
+            '🖱️ Mouse: Aim and shoot at enemies',
+            '⚡ SPACE: Dash to avoid damage',
+            '🔫 Q/E: Switch between weapons',
+            '💚 Stay out of combat to heal',
+            '',
+            'Destroy 20 enemies to win the level!'
+        ] : [
+            '🏃 Endless Runner mode!',
+            '🎯 WASD or Arrow Keys: Move',
+            '🖱️ Mouse: Aim and shoot',
+            '⚡ SPACE: Dash',
+            '🔫 Q/E: Switch weapons',
+            '',
+            'Survive as long as possible!'
+        ];
+
+        instructions.forEach((instruction, index) => {
+            this.add.text(width / 2, height / 2 - 120 + (index * 30), instruction, {
+                fontFamily: 'Arial',
+                fontSize: '18px',
+                color: '#ffffff',
+                align: 'center'
+            }).setOrigin(0.5);
+        });
+
+        // Start button
+        const startButton = this.add.text(width / 2, height / 2 + 140, 'Start Playing!', {
+            fontFamily: 'Arial',
+            fontSize: '28px',
+            color: '#ffffff',
+            backgroundColor: '#4CAF50',
+            padding: { x: 20, y: 10 }
+        }).setOrigin(0.5);
+
+        startButton.setInteractive({ useHandCursor: true });
+        startButton.on('pointerdown', () => {
+            // Remove tutorial overlay and panel
+            overlay.destroy();
+            panel.destroy();
+            startButton.destroy();
+            // Tutorial instruction texts will be destroyed automatically
+        });
     }
 
     private handleProjectilePlayerHit(projectile: Projectile, player: Player): void {
@@ -422,7 +514,7 @@ export class GameScene extends Phaser.Scene {
             
             // Play hit sound using AudioManager
             if (this.audioManager) {
-                this.audioManager.playHitSound('player', damage);
+                this.audioManager.playHitSound('player');
             }
         }
         projectile.destroy();
@@ -527,11 +619,71 @@ export class GameScene extends Phaser.Scene {
     }
 
     private pauseGame(): void {
-        this.scene.pause();
-        this.scene.launch(SCENE_KEYS.PAUSE);
+        if (this.isPaused) return this.resumeGame();
+
+        this.isPaused = true;
+        this.physics.world.pause();
+
+        const w = this.scale.width, h = this.scale.height;
+
+        const dim = this.add.rectangle(0, 0, w, h, 0x000000, 0.55).setOrigin(0);
+        const panel = this.add.rectangle(w/2, h/2, 420, 300, 0x111111, 0.95).setOrigin(0.5).setStrokeStyle(2, 0xffffff, 0.25);
+
+        const resume = this.add.text(w/2, h/2 - 80, "Resume", {
+            fontSize: "22px",
+            color: "#fff",
+            backgroundColor: "rgba(255,255,255,.08)",
+            padding: { x: 10, y: 6 }
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true }).on("pointerup", () => this.resumeGame());
+
+        const settings = this.add.text(w/2, h/2 - 30, "Settings", {
+            fontSize: "22px",
+            color: "#fff",
+            backgroundColor: "rgba(255,255,255,.08)",
+            padding: { x: 10, y: 6 }
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true }).on("pointerup", () => {
+            // For now, just show existing settings. In future could create dedicated game settings overlay
+            this.scene.launch(SCENE_KEYS.PAUSE);
+        });
+
+        const restart = this.add.text(w/2, h/2 + 20, "Restart", {
+            fontSize: "22px",
+            color: "#fff",
+            backgroundColor: "rgba(255,255,255,.08)",
+            padding: { x: 10, y: 6 }
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true }).on("pointerup", () => this.restartLevel());
+
+        const mainMenu = this.add.text(w/2, h/2 + 70, "Main Menu", {
+            fontSize: "22px",
+            color: "#fff",
+            backgroundColor: "rgba(255,255,255,.08)",
+            padding: { x: 10, y: 6 }
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true }).on("pointerup", () => this.exitToMenu());
+
+        this.pauseOverlay = this.add.container(0, 0, [dim, panel, resume, settings, restart, mainMenu]);
+    }
+
+    private resumeGame(): void {
+        this.pauseOverlay?.destroy(true);
+        this.pauseOverlay = undefined;
+        this.physics.world.resume();
+        this.isPaused = false;
+    }
+
+    private restartLevel(): void {
+        this.pauseOverlay?.destroy(true);
+        this.scene.restart(); // This will call init() and reset the scene
+    }
+
+    private exitToMenu(): void {
+        this.pauseOverlay?.destroy(true);
+        this.scene.stop(SCENE_KEYS.HUD);
+        this.scene.start(SCENE_KEYS.MENU);
     }
 
     private gameOver(): void {
+        // Stop HUD scene first
+        this.scene.stop(SCENE_KEYS.HUD);
         this.scene.start(SCENE_KEYS.GAME_OVER, {
             score: this.score,
             wave: this.wave,
@@ -543,12 +695,14 @@ export class GameScene extends Phaser.Scene {
     private levelComplete(): void {
         if (this.gameData.mode === 'campaign' && this.gameData.level && this.gameData.level < 2) {
             // Start next level
+            this.scene.stop(SCENE_KEYS.HUD);
             this.scene.start(SCENE_KEYS.GAME, {
                 mode: 'campaign',
                 level: this.gameData.level + 1
             });
         } else {
             // Campaign complete or survival mode
+            this.scene.stop(SCENE_KEYS.HUD);
             this.scene.start(SCENE_KEYS.GAME_OVER, {
                 score: this.score,
                 wave: this.wave,

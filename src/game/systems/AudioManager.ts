@@ -1,4 +1,5 @@
 import { Settings } from './Settings';
+import { AUDIO_KEYS } from '../config';
 
 // Audio configuration constants
 const AUDIO_CONFIG = {
@@ -392,21 +393,62 @@ export class AudioManager {
     }
 
     /**
+     * UI audio helper methods
+     */
+    public uiClick(): void {
+        if (this.scene.sound.get(AUDIO_KEYS.UI.BUTTON_CLICK)) {
+            this.scene.sound.play(AUDIO_KEYS.UI.BUTTON_CLICK, {
+                volume: this.getEffectiveVolume('sfx') * 0.8
+            });
+        } else {
+            // Fallback - try SUCCESS
+            if (this.scene.sound.get(AUDIO_KEYS.UI.SUCCESS)) {
+                this.scene.sound.play(AUDIO_KEYS.UI.SUCCESS, {
+                    volume: this.getEffectiveVolume('sfx') * 0.6
+                });
+            }
+        }
+    }
+
+    public previewUI(): void {
+        if (this.scene.sound.get(AUDIO_KEYS.UI.SUCCESS)) {
+            this.scene.sound.play(AUDIO_KEYS.UI.SUCCESS, {
+                volume: this.getEffectiveVolume('sfx') * 0.5
+            });
+        } else {
+            // Fallback beep-like sound using existing assets if available
+            if (this.scene.sound.get(AUDIO_KEYS.UI.BUTTON_CLICK)) {
+                this.scene.sound.play(AUDIO_KEYS.UI.BUTTON_CLICK, {
+                    volume: this.getEffectiveVolume('sfx') * 0.3,
+                    rate: 1.5
+                });
+            }
+        }
+    }
+
+    public applyMusicVolume(): void {
+        // Update current music volume if playing
+        if (this.currentMusic?.isPlaying && 'setVolume' in this.currentMusic) {
+            (this.currentMusic as any).setVolume(this.getEffectiveVolume('music'));
+        }
+    }
+
+    /**
      * Cleanup when scene is destroyed
      */
     public destroy(): void {
         // Stop all audio
         this.stopMusic(0);
-        
+
         // Clear all pools
         this.sfxPool.forEach(pool => {
             pool.forEach(sound => sound.destroy());
         });
         this.sfxPool.clear();
-        
+
         // Remove event listeners
         this.scene.events.off('settings-changed', this.onSettingsChanged, this);
-        
+
         // Clear reference
         if (AudioManager.instance === this) {
             AudioManager.instance = null as any;

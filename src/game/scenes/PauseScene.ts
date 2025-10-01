@@ -5,11 +5,16 @@
 
 import Phaser from 'phaser';
 import { SCENE_KEYS, COLORS, AUDIO_KEYS } from '../config';
+import { settings } from '../systems/Settings';
+import { AudioManager } from '../systems/AudioManager';
+import { Slider } from '../ui/Slider';
 
 export class PauseScene extends Phaser.Scene {
     private selectedIndex: number = 0;
     private menuItems: Array<{ text: string, action: () => void }> = [];
     private menuButtons: Phaser.GameObjects.Text[] = [];
+    private audioManager!: AudioManager;
+    private settingsOverlay?: Phaser.GameObjects.Container;
 
     constructor() {
         super({ key: SCENE_KEYS.PAUSE });
@@ -30,8 +35,8 @@ export class PauseScene extends Phaser.Scene {
         overlay.setOrigin(0);
 
         // Pause panel
-        const panel = this.add.rectangle(width / 2, height / 2, 500, 400, COLORS.UI_BACKGROUND, 0.95);
-        panel.setStrokeStyle(4, COLORS.UI_TEXT);
+        const panel = this.add.rectangle(width / 2, height / 2, 500, 400, 0x111111, 0.95);
+        panel.setStrokeStyle(4, 0xffffff);
 
         // Title
         this.add.text(width / 2, height / 2 - 150, '⏸️ PAUSED', {
@@ -89,7 +94,7 @@ export class PauseScene extends Phaser.Scene {
     private updateMenuSelection(): void {
         this.menuButtons.forEach((button, index) => {
             if (index === this.selectedIndex) {
-                button.setTint(COLORS.ACCENT_ORANGE);
+                button.setTint(0xFF9800);
                 button.setScale(1.1);
             } else {
                 button.clearTint();
@@ -154,16 +159,23 @@ export class PauseScene extends Phaser.Scene {
     }
 
     private showSettingsOverlay(): void {
+        if (this.settingsOverlay) return;
+
+        this.audioManager = AudioManager.getInstance(this);
+
         const { width, height } = this.cameras.main;
 
+        // Get current settings
+        const { masterVolume, sfxVolume, musicVolume } = settings.getAll();
+
         // Create overlay background
-        const settingsOverlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.8);
-        settingsOverlay.setOrigin(0);
-        settingsOverlay.setInteractive();
+        const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.8);
+        overlay.setOrigin(0);
+        overlay.setInteractive();
 
         // Settings panel
-        const panel = this.add.rectangle(width / 2, height / 2, 600, 400, COLORS.UI_BACKGROUND, 0.95);
-        panel.setStrokeStyle(4, COLORS.UI_TEXT);
+        const panel = this.add.rectangle(width / 2, height / 2, 600, 400, 0x111111, 0.95);
+        panel.setStrokeStyle(4, 0xffffff);
 
         // Title
         this.add.text(width / 2, height / 2 - 150, '⚙️ Settings', {
@@ -172,47 +184,88 @@ export class PauseScene extends Phaser.Scene {
             color: '#ffffff'
         }).setOrigin(0.5);
 
-        // Volume controls (simplified)
-        const volumeText = this.add.text(width / 2, height / 2 - 50, 'Audio Settings:', {
-            fontFamily: 'Arial',
-            fontSize: '24px',
-            color: '#ffffff'
-        }).setOrigin(0.5);
+        // Volume sliders
+        const sMaster = new Slider({
+            scene: this,
+            x: panel.x - 200,
+            y: panel.y - 80,
+            label: "Master",
+            value: masterVolume ?? 0.7,
+            onChange: (v) => { settings.set("masterVolume", v); this.audioManager.previewUI(); }
+        });
 
-        this.add.text(width / 2, height / 2, 'Master Volume: 70%', {
-            fontFamily: 'Arial',
-            fontSize: '18px',
-            color: '#ffffff'
-        }).setOrigin(0.5);
+        const sSfx = new Slider({
+            scene: this,
+            x: panel.x - 200,
+            y: panel.y - 30,
+            label: "SFX",
+            value: sfxVolume ?? 0.8,
+            onChange: (v) => { settings.set("sfxVolume", v); this.audioManager.previewUI(); }
+        });
 
-        this.add.text(width / 2, height / 2 + 30, 'SFX Volume: 80%', {
-            fontFamily: 'Arial',
-            fontSize: '18px',
-            color: '#ffffff'
-        }).setOrigin(0.5);
+        const sMusic = new Slider({
+            scene: this,
+            x: panel.x - 200,
+            y: panel.y + 20,
+            label: "Music",
+            value: musicVolume ?? 0.6,
+            onChange: (v) => { settings.set("musicVolume", v); this.audioManager.applyMusicVolume(); }
+        });
 
-        this.add.text(width / 2, height / 2 + 60, 'Music Volume: 60%', {
-            fontFamily: 'Arial',
-            fontSize: '18px',
-            color: '#ffffff'
-        }).setOrigin(0.5);
+        // Accessibility toggles
+        const btnHC = this.makeToggle(panel.x - 200, panel.y + 80, "High Contrast", settings.get("highContrast") ?? false, (on) => {
+            settings.set("highContrast", on);
+        });
+
+        const btnRM = this.makeToggle(panel.x + 40, panel.y + 80, "Reduce Motion", settings.get("reduceMotion") ?? false, (on) => {
+            settings.set("reduceMotion", on);
+        });
 
         // Close button
-        const closeButton = this.add.text(width / 2, height / 2 + 120, 'Back', {
-            fontFamily: 'Arial',
-            fontSize: '32px',
-            color: '#ffffff',
-            backgroundColor: '#333333',
-            padding: { x: 20, y: 10 }
-        }).setOrigin(0.5);
+        const btnClose = this.makeButton(panel.x, panel.y + 130, "Back", () => this.closeSettingsOverlay());
 
-        closeButton.setInteractive({ useHandCursor: true });
-        closeButton.on('pointerdown', () => {
-            settingsOverlay.destroy();
-            panel.destroy();
-            volumeText.destroy();
-            closeButton.destroy();
-        });
+        // Container for cleanup
+        this.settingsOverlay = this.add.container(0, 0, [
+            overlay, panel, sMaster.container, sSfx.container, sMusic.container, btnHC, btnRM, btnClose
+        ]);
+
+        // ESC closes
+        this.input.keyboard!.once('keydown-ESC', () => this.closeSettingsOverlay());
+    }
+
+    private makeButton(x: number, y: number, label: string, onUp: () => void): Phaser.GameObjects.Text {
+        const t = this.add.text(x, y, label, {
+            fontFamily: 'Arial',
+            fontSize: '20px',
+            color: '#ffffff',
+            backgroundColor: 'rgba(255,255,255,0.08)',
+            padding: { x: 10, y: 6 }
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+        t.on('pointerover', () => t.setStyle({ backgroundColor: 'rgba(255,255,255,0.18)' }));
+        t.on('pointerout', () => t.setStyle({ backgroundColor: 'rgba(255,255,255,0.08)' }));
+        t.on('pointerdown', () => { this.audioManager.uiClick(); t.setScale(0.98); });
+        t.on('pointerup', () => { t.setScale(1); onUp(); });
+
+        return t;
+    }
+
+    private makeToggle(x: number, y: number, label: string, initial: boolean, onToggle: (on: boolean) => void): Phaser.GameObjects.Text {
+        let toggleOn = initial;
+        const onTxt = () => `${label}: ${toggleOn ? "On" : "Off"}`;
+        const b = this.makeButton(x + 120, y, onTxt(), () => {
+            toggleOn = !toggleOn;
+            b.setText(onTxt());
+            onToggle(toggleOn);
+        }).setOrigin(0, 0.5);
+        this.add.text(x, y, "", { fontSize: "1px" }); // spacer for layout baseline
+        return b;
+    }
+
+    private closeSettingsOverlay(): void {
+        this.settingsOverlay?.destroy(true);
+        this.settingsOverlay = undefined;
+        this.input.keyboard?.removeListener('keydown-ESC');
     }
 
     private playHoverSound(): void {
